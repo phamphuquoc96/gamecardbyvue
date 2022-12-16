@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div style="{marginTop:'15px'}">
+    <div class="container-play-screen">
       <div v-for="(items, i) in generateMatrix">
         <div v-for="(item, j) in items" :style="{ display: 'inline-block' }">
           <div @click="onClickCard(i, j)" class="flip-card"
@@ -190,6 +190,10 @@ export default {
 body {
   font-family: Arial, Helvetica, sans-serif;
   background: black !important;
+}
+
+.container-play-screen {
+  margin-top: 15px;
 }
 
 .flip-card {
