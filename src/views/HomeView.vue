@@ -2,7 +2,7 @@
   <div class="home">
     <!-- <img alt="Vue logo" src="../assets/logo.png" /> -->
     <!-- <HelloWorld msg="Welcome to Your Vue.js App" /> -->
-    <div>
+    <div style="{marginTop:'15px'}">
       <div v-for="(items, i) in generateMatrix">
         <div v-for="(item, j) in items" :style="{ display: 'inline-block' }">
           <div @click="onClickCard(i, j)" class="flip-card"
@@ -22,12 +22,23 @@
         </div>
       </div>
     </div>
+    <a-modal v-model:visible="modalVisible" title="Select Difficulty" :footer="null" centered
+      @ok="onselectedDifficult(2)">
+      <div class="center-content">
+        <p class="button-19" @click="onselectedDifficult(4)">Human</p>
+        <p class="button-19" @click="onselectedDifficult(6)">God</p>
+        <p class="button-19" @click="onselectedDifficult(8)">Universe</p>
+      </div>
+    </a-modal>
   </div>
+
 </template>
 
 <script>
 // @ is an alias to /src
 import HelloWorld from "@/components/HelloWorld.vue";
+import Modal from "@/components/Modal.vue"
+import store from "../store";
 
 function randomInteger(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -56,17 +67,21 @@ export default {
   name: "HomeView",
   components: {
     HelloWorld,
+    Modal
   },
   data() {
     return {
-      numberOfMatrix: 8, //4x4,
+      numberOfMatrix: 2, //4x4,
       numberOfCardPairs: 2,
       matrixData: [],
       selectedCard_1: '',
       selectedCard_2: '',
-      listOpened: []
+      listOpened: [],
+      modalVisible: true,
+
     }
   },
+
   computed: {
     // generateMatrix() {
     //   let matrix = [];
@@ -113,6 +128,12 @@ export default {
 
   },
   methods: {
+    onselectedDifficult(value) {
+      this.numberOfMatrix = value
+      this.modalVisible = false
+      this.time = 0
+      store.dispatch('countTime')
+    },
     getImageByValue(value) {
       return require(`@/assets/images/${value}.png`)
     },
@@ -121,8 +142,8 @@ export default {
       let flag = this.listOpened.findIndex(obj => obj === index)
       return flag != -1
     },
-
     onClickCard(i, j) {
+      store.dispatch('increment')
       if (this.selectedCard_2 === '' && `${i}x${j}` === this.selectedCard_1) {
         this.selectedCard_1 = ''
       } else {
@@ -159,11 +180,13 @@ export default {
       handler(newValue, oldValue) {
         if (this.listOpened.length === this.numberOfMatrix * this.numberOfMatrix) {
           this.$router.push({ path: '/about' })
+          store.dispatch('stopCountTime')
         }
       },
       deep: true
     }
-  }
+  },
+
 };
 </script>
 
@@ -171,7 +194,7 @@ export default {
 <style >
 body {
   font-family: Arial, Helvetica, sans-serif;
-  background: black;
+  background: black !important;
 }
 
 .flip-card {
@@ -219,5 +242,74 @@ body {
   transform: rotateY(180deg);
   border-radius: 10px;
   display: flex;
+}
+
+.center-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.button-19 {
+  appearance: button;
+  background-color: #1899D6;
+  border: solid transparent;
+  border-radius: 16px;
+  border-width: 0 0 4px;
+  box-sizing: border-box;
+  color: #FFFFFF;
+  cursor: pointer;
+  display: inline-block;
+  font-family: din-round, sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: .8px;
+  line-height: 20px;
+  margin: 0;
+  outline: none;
+  overflow: visible;
+  padding: 13px 16px;
+  text-align: center;
+  text-transform: uppercase;
+  touch-action: manipulation;
+  transform: translateZ(0);
+  transition: filter .2s;
+  user-select: none;
+  -webkit-user-select: none;
+  vertical-align: middle;
+  white-space: nowrap;
+  width: 50%;
+  margin-bottom: 10px;
+}
+
+.button-19:after {
+  background-clip: padding-box;
+  background-color: #1CB0F6;
+  border: solid transparent;
+  border-radius: 16px;
+  border-width: 0 0 4px;
+  bottom: -4px;
+  content: "";
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: -1;
+}
+
+.button-19:main,
+.button-19:focus {
+  user-select: auto;
+}
+
+.button-19:hover:not(:disabled) {
+  filter: brightness(1.1);
+  -webkit-filter: brightness(1.1);
+}
+
+.button-19:disabled {
+  cursor: auto;
 }
 </style>
