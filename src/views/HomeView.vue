@@ -1,7 +1,5 @@
 <template>
-  <div class="home">
-    <!-- <img alt="Vue logo" src="../assets/logo.png" /> -->
-    <!-- <HelloWorld msg="Welcome to Your Vue.js App" /> -->
+  <div>
     <div style="{marginTop:'15px'}">
       <div v-for="(items, i) in generateMatrix">
         <div v-for="(item, j) in items" :style="{ display: 'inline-block' }">
@@ -36,8 +34,6 @@
 
 <script>
 // @ is an alias to /src
-import HelloWorld from "@/components/HelloWorld.vue";
-import Modal from "@/components/Modal.vue"
 import store from "../store";
 
 function randomInteger(min, max) {
@@ -66,8 +62,7 @@ function countNumInMatrix(num, array, maxTrix) {
 export default {
   name: "HomeView",
   components: {
-    HelloWorld,
-    Modal
+
   },
   data() {
     return {
